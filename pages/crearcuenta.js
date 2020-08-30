@@ -1,9 +1,13 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import Layout from '../components/Layout';
 import {useFormik} from 'formik';
 import * as Yup from 'yup';
+import authContext from '../context/auth/authContext';
+import Alerta from '../components/Alerta';
 
 const crearcuenta = () => {
+    const AuthContext = useContext(authContext);
+    const {mensaje, usuarioAutenticado, registrarUsuario} = AuthContext;
     const formik = useFormik({
         initialValues:{
             nombre:'',
@@ -17,13 +21,14 @@ const crearcuenta = () => {
             .min(6, 'El password debe contener al menos 6 caracteres')
         }),
         onSubmit: valores => {
-            //enviar al api
+            registrarUsuario(valores);
         }
     });
     return (
         <Layout>
             <div className="md:w-4/5 xl:3/5 mx-auto mb-32">
                 <h2 className="text-4xl font-sans font-bold text-gray-800 text-center my-4">Crear cuenta</h2>
+                {mensaje ? <Alerta/> : null}
                 <div className="flex justify-center mt-5">
                     <div className="w-full max-w-lg">
                         <form onSubmit={formik.handleSubmit} className="bg-white shadow-md px-8 pt-6 pb-8 mb-4">
@@ -87,7 +92,7 @@ const crearcuenta = () => {
                                     </div>
                                 ): null}
                             </div>
-                            <input type="button" value="Crear cuenta" className="bg-red-500 hover:bg-gray-900 w-full p-2 text-white uppercase font-bold"/>
+                            <input type="submit" value="Crear cuenta" className="bg-red-500 hover:bg-gray-900 w-full p-2 text-white uppercase font-bold"/>
                         </form>
                     </div>
                 </div>
