@@ -1,11 +1,12 @@
 import React, {useReducer} from 'react';
 import authContext from './authContext';
 import authReducer from './authReducer';
+import tokenAuth from '../../config/tokenAuth';
 import { 
     USUARIO_AUTENTICADO,
     REGISTRO_EXITOSO,
     REGISTRO_ERROR,
-    LIMPIAR_ALERTA, LOGIN_ERROR, LOGIN_EXITOSO
+    LIMPIAR_ALERTA, LOGIN_ERROR, LOGIN_EXITOSO, CERRAR_SESION
 } from '../../types';
 import clienteAxios from '../../config/axios';
 
@@ -60,10 +61,26 @@ const AuthState = props => {
             })
         },3000)
     }
-    const usuarioAutenticado = (nombre) => {
+    const usuarioAutenticado = async() => {
+        tokenAuth( localStorage.getItem('rnd_token') );
+        try {
+            const respuesta = await clienteAxios('/api/auth');
+            dispatch({
+                type: USUARIO_AUTENTICADO,
+                payload: respuesta.data.usuario
+            });    
+        } catch (error) {
+            let errorMsg = error.response ? error.response.data.msg : 'No hay conexion con el servidor';
+            dispatch({
+                type: LOGIN_ERROR,
+                payload: errorMsg
+            });
+        }
+        
+    }
+    const logout = ()=>{
         dispatch({
-            type: USUARIO_AUTENTICADO,
-            payload: nombre
+            type: CERRAR_SESION
         });
     }
     return(
@@ -75,7 +92,8 @@ const AuthState = props => {
                 mensaje: state.mensaje,
                 usuarioAutenticado,
                 registrarUsuario,
-                login
+                login,
+                logout
             }}
         >
             {props.children}

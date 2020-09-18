@@ -2,7 +2,7 @@ import {
     USUARIO_AUTENTICADO, 
     REGISTRO_EXITOSO,
     REGISTRO_ERROR,
-    LIMPIAR_ALERTA, LOGIN_ERROR, LOGIN_EXITOSO
+    LIMPIAR_ALERTA, LOGIN_ERROR, LOGIN_EXITOSO, CERRAR_SESION
 } from "../../types";
 
 const reducerFunction = (state, action) => {
@@ -30,6 +30,14 @@ const reducerFunction = (state, action) => {
                 ...state,
                 isAutenticado: true,
                 token: action.payload
+            }
+        case CERRAR_SESION:
+            localStorage.removeItem('rnd_token');
+            return{
+                ...state,
+                usuario: null,
+                token: null,
+                isAutenticado: null
             }
         default:
             return state;
