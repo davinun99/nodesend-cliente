@@ -1,9 +1,20 @@
-import React from 'react';
+import React, { useContext, useEffect } from 'react';
 import Layout from '../components/Layout';
 import {useFormik} from 'formik';
 import * as Yup from 'yup';
+import authContext from '../context/auth/authContext';
+import Alerta from '../components/Alerta';
+import {useRouter} from 'next/router';
 
 const login = () => {
+    const AuthContext = useContext(authContext);
+    const {login, mensaje, isAutenticado} = AuthContext;
+    const router = useRouter();
+    useEffect(()=>{
+        if (isAutenticado) {
+            router.push('/')
+        }
+    },[isAutenticado])
     const formik = useFormik({
         initialValues:{
             email:'',
@@ -14,13 +25,14 @@ const login = () => {
             password: Yup.string().required('El password es obligatorio')
         }),
         onSubmit: valores => {
-            //enviar al api
+            login(valores);
         }
     });
     return (
         <Layout>
             <div className="md:w-4/5 xl:3/5 mx-auto mb-32">
                 <h2 className="text-4xl font-sans font-bold text-gray-800 text-center my-4">Iniciar sesión</h2>
+                {mensaje && <Alerta/>}
                 <div className="flex justify-center mt-5">
                     <div className="w-full max-w-lg">
                         <form onSubmit={formik.handleSubmit} className="bg-white shadow-md px-8 pt-6 pb-8 mb-4">
@@ -64,7 +76,7 @@ const login = () => {
                                     </div>
                                 ): null}
                             </div>
-                            <input type="button" value="Iniciar sesión" className="bg-red-500 hover:bg-gray-900 w-full p-2 text-white uppercase font-bold"/>
+                            <input type="submit" value="Iniciar sesión" className="bg-red-500 hover:bg-gray-900 w-full p-2 text-white uppercase font-bold"/>
                         </form>
                     </div>
                 </div>

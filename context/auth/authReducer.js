@@ -2,7 +2,7 @@ import {
     USUARIO_AUTENTICADO, 
     REGISTRO_EXITOSO,
     REGISTRO_ERROR,
-    LIMPIAR_ALERTA
+    LIMPIAR_ALERTA, LOGIN_ERROR, LOGIN_EXITOSO
 } from "../../types";
 
 const reducerFunction = (state, action) => {
@@ -13,7 +13,8 @@ const reducerFunction = (state, action) => {
                 usuario: action.payload
             };
         case REGISTRO_EXITOSO:
-        case REGISTRO_ERROR:    
+        case REGISTRO_ERROR:
+        case LOGIN_ERROR:    
             return {
                 ...state,
                 mensaje: action.payload
@@ -22,6 +23,13 @@ const reducerFunction = (state, action) => {
             return{
                 ...state,
                 mensaje: null
+            }
+        case LOGIN_EXITOSO:
+            localStorage.setItem('rnd_token', action.payload);
+            return{
+                ...state,
+                isAutenticado: true,
+                token: action.payload
             }
         default:
             return state;

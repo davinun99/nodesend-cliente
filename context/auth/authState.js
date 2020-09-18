@@ -5,14 +5,14 @@ import {
     USUARIO_AUTENTICADO,
     REGISTRO_EXITOSO,
     REGISTRO_ERROR,
-    LIMPIAR_ALERTA
+    LIMPIAR_ALERTA, LOGIN_ERROR, LOGIN_EXITOSO
 } from '../../types';
 import clienteAxios from '../../config/axios';
 
 const AuthState = props => {
     const initialState = {
         token: '',
-        isAutenticado: null,
+        isAutenticado: typeof window !== 'undefined' ? localStorage.getItem('rnd_token'): null,
         usuario: null,
         mensaje: null
     }
@@ -38,11 +38,33 @@ const AuthState = props => {
             })
         },3000)
     }
+    const login = async(datos) => {
+        try {
+            const respuesta = await clienteAxios.post('/api/auth', datos);
+            dispatch({
+                type: LOGIN_EXITOSO,
+                payload: respuesta.data.token
+            });
+            
+        } catch (error) {
+            let errorMsg = error.response ? error.response.data.msg : 'No hay conexion con el servidor';
+            dispatch({
+                type: LOGIN_ERROR,
+                payload: errorMsg
+            });
+        }
+        //limpio la alerta dps de 3 seg
+        setTimeout(()=>{
+            dispatch({
+                type: LIMPIAR_ALERTA
+            })
+        },3000)
+    }
     const usuarioAutenticado = (nombre) => {
         dispatch({
             type: USUARIO_AUTENTICADO,
             payload: nombre
-        })
+        });
     }
     return(
         <authContext.Provider
@@ -52,7 +74,8 @@ const AuthState = props => {
                 usuario: state.usuario,
                 mensaje: state.mensaje,
                 usuarioAutenticado,
-                registrarUsuario
+                registrarUsuario,
+                login
             }}
         >
             {props.children}
