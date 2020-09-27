@@ -12,8 +12,8 @@ import clienteAxios from '../../config/axios';
 
 const AuthState = props => {
     const initialState = {
-        token: '',
-        isAutenticado: typeof window !== 'undefined' ? localStorage.getItem('rnd_token'): null,
+        token: typeof window !== 'undefined' ? localStorage.getItem('rnd_token'): '',
+        isAutenticado: null,
         usuario: null,
         mensaje: null
     }
@@ -63,6 +63,7 @@ const AuthState = props => {
     }
     const usuarioAutenticado = async() => {
         tokenAuth( localStorage.getItem('rnd_token') );
+        
         try {
             const respuesta = await clienteAxios('/api/auth');
             dispatch({
@@ -70,11 +71,16 @@ const AuthState = props => {
                 payload: respuesta.data.usuario
             });    
         } catch (error) {
+            
             let errorMsg = error.response ? error.response.data.msg : 'No hay conexion con el servidor';
-            dispatch({
-                type: LOGIN_ERROR,
-                payload: errorMsg
-            });
+            if(error.response.status === 403){
+                logout();
+            }else{
+                dispatch({
+                    type: LOGIN_ERROR,
+                    payload: errorMsg
+                });
+            }
         }
         
     }
