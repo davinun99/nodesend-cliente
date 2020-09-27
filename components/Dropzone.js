@@ -4,7 +4,7 @@ import appContext from '../context/app/appContext';
 
 const Dropzone = () => {
     const AppContext = useContext(appContext);
-    const {mostrarAlerta, subirArchivo, isCargando} = AppContext;
+    const {mostrarAlerta, subirArchivo, isCargando, crearEnlace} = AppContext;
     
     const onDropAccepted = useCallback(async(acceptedFiles) => {
         //creando form data
@@ -25,9 +25,6 @@ const Dropzone = () => {
             <p className="text-sm text-gray-500">{(archivo.size / Math.pow(1024,2 ) ).toFixed(2)} MB</p>
         </li>
     ));
-    const crearEnlace = () =>{
-
-    }
     return (
         <div className="md:flex-1 mb-3 mx-2 mt-16 lg:mt-0 flex flex-col items-center justify-center border-dashed border-gray-400 border-2 bg-gray-100 px-4">
             {acceptedFiles.length > 0 ? (
@@ -43,7 +40,7 @@ const Dropzone = () => {
                         Subiendo archivo...
                     </p>:(
                         <button 
-                            onClick={()=>crearEnlace()}
+                            onClick={crearEnlace}
                             className="bg-blue-700 w-full py-3 rounded-lg text-white my-10 hover:bg-blue-800" type="button">
                             Crear el enlace
                         </button>

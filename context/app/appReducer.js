@@ -1,4 +1,4 @@
-import { LIMPIAR_ALERTA, MOSTRAR_ALERTA,SUBIR_ARCHIVO, SUBIR_ARCHIVO_ERROR, SUBIR_ARCHIVO_EXITO } from "../../types";
+import { CREAR_ENLACE_EXITO, LIMPIAR_ALERTA, MOSTRAR_ALERTA,SUBIR_ARCHIVO, SUBIR_ARCHIVO_ERROR, SUBIR_ARCHIVO_EXITO } from "../../types";
 
 const reducer = (state, action) => {
     switch(action.type){
@@ -29,6 +29,11 @@ const reducer = (state, action) => {
                 ...state,
                 mensajeArchivo: action.payload,
                 isCargando: false
+            }
+        case CREAR_ENLACE_EXITO:
+            return{
+                ...state,
+                url: action.payload
             }
         default:
             return state;

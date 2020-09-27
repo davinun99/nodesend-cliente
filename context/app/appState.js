@@ -1,19 +1,24 @@
 import React, { useReducer } from 'react';
-import { LIMPIAR_ALERTA, MOSTRAR_ALERTA, SUBIR_ARCHIVO, SUBIR_ARCHIVO_ERROR, SUBIR_ARCHIVO_EXITO } from '../../types';
+import { CREAR_ENLACE_EXITO, LIMPIAR_ALERTA, MOSTRAR_ALERTA, SUBIR_ARCHIVO, SUBIR_ARCHIVO_ERROR, SUBIR_ARCHIVO_EXITO } from '../../types';
 import appContext from './appContext';
 import appReducer from './appReducer';
 
 import clienteAxios from '../../config/axios'
 
 const appState = ({children}) => {
-    //muestra la alerta de tamaño
+    
     const initialState = {
         mensajeArchivo: '',
         nombreHash:'',
         nombreOriginal:'',
         isCargando: false,
+        descargas: 1,
+        password: '',
+        autor: null,
+        url: '',
     }
     const [state, dispatch] = useReducer(appReducer, initialState);
+    //muestra la alerta de tamaño
     const mostrarAlerta = msg => {
         console.log(msg);
         dispatch({
@@ -47,6 +52,25 @@ const appState = ({children}) => {
             });
         }
     }
+    const crearEnlace = async() => {
+        
+        const data = {
+            nombre: state.nombreHash,
+            nombre_original: state.nombreOriginal,
+            descargas: state.descargas,
+            password: state.password,
+            autor: state.autor,
+        }
+        try {
+            const respuesta = await clienteAxios.post('/api/enlaces', data);
+            dispatch({
+                type: CREAR_ENLACE_EXITO,
+                payload: respuesta.data.msg
+            })
+        } catch (error) {
+            console.log(error);
+        }
+    }
     return (
         <appContext.Provider
             value={{
@@ -54,8 +78,13 @@ const appState = ({children}) => {
                 nombreOriginal: state.nombreOriginal,
                 nombreHash: state.nombreHash,
                 isCargando: state.isCargando,
+                descargas: state.descargas,
+                password: state.password,
+                autor: state.autor,
+                url: state.url,
                 mostrarAlerta,
-                subirArchivo
+                subirArchivo,
+                crearEnlace
             }}
         >
             {children}
