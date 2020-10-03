@@ -1,11 +1,16 @@
 import React, { useCallback, useContext } from 'react';
 import { useDropzone } from 'react-dropzone';
 import appContext from '../context/app/appContext';
+import authContext from '../context/auth/authContext';
+import Formulario from './Formulario';
 
 const Dropzone = () => {
     const AppContext = useContext(appContext);
     const {mostrarAlerta, subirArchivo, isCargando, crearEnlace} = AppContext;
     
+    const AuthContext = useContext(authContext);
+    const {isAutenticado} = AuthContext;
+
     const onDropAccepted = useCallback(async(acceptedFiles) => {
         //creando form data
         const formData = new FormData();
@@ -35,16 +40,20 @@ const Dropzone = () => {
                     <ul>
                         {archivos}
                     </ul>
+                    {isAutenticado ? 
+                        (<Formulario/>)
+                        :null
+                    }
                     {isCargando ? 
-                    <p className="my-10 text-center text-gray-600">
-                        Subiendo archivo...
-                    </p>:(
-                        <button 
-                            onClick={crearEnlace}
-                            className="bg-blue-700 w-full py-3 rounded-lg text-white my-10 hover:bg-blue-800" type="button">
-                            Crear el enlace
-                        </button>
-                    )
+                        <p className="my-10 text-center text-gray-600">
+                            Subiendo archivo...
+                        </p>:(
+                            <button 
+                                onClick={crearEnlace}
+                                className="bg-blue-700 w-full py-3 rounded-lg text-white my-10 hover:bg-blue-800" type="button">
+                                Crear el enlace
+                            </button>
+                        )
                     }
                     
                 </div>

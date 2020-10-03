@@ -66,10 +66,12 @@ const AuthState = props => {
         
         try {
             const respuesta = await clienteAxios('/api/auth');
-            dispatch({
-                type: USUARIO_AUTENTICADO,
-                payload: respuesta.data.usuario
-            });    
+            if (respuesta.data.usuario) {
+                dispatch({
+                    type: USUARIO_AUTENTICADO,
+                    payload: respuesta.data.usuario
+                });        
+            }
         } catch (error) {
             
             let errorMsg = error.response ? error.response.data.msg : 'No hay conexion con el servidor';

@@ -16,7 +16,11 @@ const Index = () => {
     const {mensajeArchivo, url} = AppContext;
 
     useEffect(()=>{
-        usuarioAutenticado();
+        const token = localStorage.getItem('rnd_token');
+        if (token) {
+            usuarioAutenticado();    
+        }
+        
     },[])
     return (
         <Layout>

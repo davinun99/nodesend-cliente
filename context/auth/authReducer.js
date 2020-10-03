@@ -2,7 +2,10 @@ import {
     USUARIO_AUTENTICADO, 
     REGISTRO_EXITOSO,
     REGISTRO_ERROR,
-    LIMPIAR_ALERTA, LOGIN_ERROR, LOGIN_EXITOSO, CERRAR_SESION
+    LIMPIAR_ALERTA, 
+    LOGIN_ERROR, 
+    LOGIN_EXITOSO, 
+    CERRAR_SESION,
 } from "../../types";
 
 const reducerFunction = (state, action) => {
@@ -10,7 +13,8 @@ const reducerFunction = (state, action) => {
         case USUARIO_AUTENTICADO:
             return {
                 ...state,
-                usuario: action.payload
+                usuario: action.payload,
+                isAutenticado: true,
             };
         case REGISTRO_EXITOSO:
         case REGISTRO_ERROR:
